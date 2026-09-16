@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Panel de agenda de CCZ Stylee.">
-    <title>Panel del barbero | CCZ Stylee</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiNmZmZmZmYiLz4KICA8cGF0aCBkPSJNMTQgMTVoMzZ2MzRIMTR6IiBmaWxsPSJub25lIiBzdHJva2U9IiMzZjczYmYiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjE5IiBmb250LXdlaWdodD0iNDAwIiBmaWxsPSIjMDkwOTA5Ij5DQ1o8L3RleHQ+Cjwvc3ZnPgo=">
+    <meta name="description" content="Panel de agenda de ArielCCZ.">
+    <title>Panel del barbero | ArielCCZ</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiNmZmZmZmYiLz4KICA8cGF0aCBkPSJNMTQgMTVoMzZ2MzRIMTR6IiBmaWxsPSJub25lIiBzdHJva2U9IiMzZjczYmYiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjMyIiB5PSI0MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjMyIiBmb250LXdlaWdodD0iNDAwIiBmaWxsPSIjMDkwOTA5Ij5BPC90ZXh0Pgo8L3N2Zz4K">
     <style>
 :root {
   --ink: #090909;
@@ -731,7 +731,7 @@ textarea.field-input { resize: vertical; }
   .demo-row-actions { grid-column: 2; }
 }
 
-/* CCZ Stylee · dirección editorial azul, blanco y negro */
+/* ArielCCZ · dirección editorial azul, blanco y negro */
 :root {
   --ink: #090909;
   --ink-soft: #171717;
@@ -820,8 +820,70 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 }
 @media (prefers-reduced-motion: reduce) { .intro-reveal { display: none; } .hero-content { animation: none; } }
 
+/* ArielCCZ: personal identity, cutout and high-contrast service actions. */
+.brand-monogram { letter-spacing: -.045em; white-space: nowrap; }
+.brand-copy small { line-height: 1.5; letter-spacing: .13em; }
+.intro-mark strong { font-size: clamp(3.5rem, 12vw, 7rem); }
+.intro-mark em { font-family: var(--sans); font-size: .7rem; letter-spacing: .25em; transform: none; }
+.intro-reveal { animation: intro-safety 0s 4s forwards; }
+@keyframes intro-safety { to { visibility: hidden; } }
+.service-photo { height: 225px; margin: 12px -20px 20px; display: flex; justify-content: center; background: radial-gradient(ellipse at center, #edf3fc, transparent 70%); }
+.service-photo img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
+.service-card a { min-height: 52px; padding: 14px 22px; margin-top: 26px; border-radius: 999px; background: #3f73bf; color: #fff; font-size: .9rem; font-weight: 700; justify-content: space-between; gap: 20px; box-shadow: 0 8px 22px rgba(24,58,109,.18); transition: transform .2s, background .2s, box-shadow .2s; }
+.service-card a span { font-family: Arial, sans-serif; font-size: 1.4rem; line-height: 1; }
+.service-card:hover a, .visagism-service a { color: #214c87; background: #fff; }
+.service-card a:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(24,58,109,.28); }
+.service-card a:focus-visible { outline: 3px solid #090909; outline-offset: 5px; }
+.visagism-service a { margin-top: 28px; border: 2px solid #fff; }
+.visagism-service p, .visagism-delivery li small { color: #fff; }
+@media (max-width: 720px) { .service-card a { width: 100%; } .brand-copy { padding-left: 7px; } }
+@media (prefers-reduced-motion: reduce) { .service-card a { transition: none; } }
+
 </style>
-    <script defer>
+    
+  </head>
+  <body class="admin-page-shell">
+    <main class="admin-auth-screen" id="login-screen">
+      <form class="admin-auth-card admin-login-card" id="login-form">
+        <a class="admin-brand" href="index.html"><b>ArielCCZ</b><small>GESTIÓN</small></a>
+        <span class="admin-auth-icon">✦</span>
+        <p class="admin-kicker">ACCESO DEL BARBERO</p>
+        <h1>Tu agenda, en un solo lugar.</h1>
+        <p>Ingresá la clave de presentación para ver reservas, domicilios y estado de cada turno.</p>
+        <label class="field-label" for="demo-pin">Clave de acceso</label>
+        <input class="field-input" id="demo-pin" type="password" autocomplete="current-password" placeholder="Ingresá la clave" required>
+        <p class="admin-login-hint">Clave de esta presentación: <strong>CCZ2026</strong></p>
+        <div class="admin-alert error hidden" id="login-error">La clave no es correcta.</div>
+        <button class="button button-copper button-full" type="submit">Entrar al panel</button>
+        <div class="admin-auth-links"><a href="index.html">← Volver al sitio</a><span>Modo demostración</span></div>
+      </form>
+    </main>
+
+    <main class="static-admin-main hidden" id="admin-panel">
+      <header class="static-admin-header">
+        <div><p class="admin-kicker">ArielCCZ · PANEL DEL BARBERO</p><h1>Agenda a domicilio</h1></div>
+        <a href="index.html">Ver página pública ↗</a>
+      </header>
+
+      <p class="admin-demo-banner">Esta es una vista de presentación. Las reservas creadas desde la página se guardan en este dispositivo y aparecen aquí.</p>
+
+      <div class="admin-date-row">
+        <label><span class="field-label">Ver agenda del día</span><input class="field-input" id="admin-date" type="date"></label>
+        <button class="admin-ghost-button" id="today-button" type="button">Hoy</button>
+      </div>
+
+      <section class="admin-summary-grid" aria-label="Resumen del día">
+        <article><span>Turnos</span><strong id="stat-total">0</strong></article>
+        <article><span>Confirmados</span><strong id="stat-confirmed">0</strong></article>
+        <article><span>Facturación prevista</span><strong id="stat-revenue">$0</strong></article>
+      </section>
+
+      <section class="admin-card">
+        <header class="admin-card-head"><h2 id="agenda-title">Agenda</h2><span id="agenda-count">0 turnos</span></header>
+        <div class="demo-appointment-list" id="appointment-list"></div>
+      </section>
+    </main>
+  <script>
 const STORAGE_KEY = "ccz-stylee-demo-bookings";
 const loginScreen = document.querySelector("#login-screen");
 const adminPanel = document.querySelector("#admin-panel");
@@ -959,47 +1021,5 @@ document.querySelector("#today-button").addEventListener("click", () => {
 if (sessionStorage.getItem("ccz-demo-admin") === "1") openPanel();
 
 </script>
-  </head>
-  <body class="admin-page-shell">
-    <main class="admin-auth-screen" id="login-screen">
-      <form class="admin-auth-card admin-login-card" id="login-form">
-        <a class="admin-brand" href="index.html"><b>CCZ</b><span>STYLEE</span><small>GESTIÓN</small></a>
-        <span class="admin-auth-icon">✦</span>
-        <p class="admin-kicker">ACCESO DEL BARBERO</p>
-        <h1>Tu agenda, en un solo lugar.</h1>
-        <p>Ingresá la clave de presentación para ver reservas, domicilios y estado de cada turno.</p>
-        <label class="field-label" for="demo-pin">Clave de acceso</label>
-        <input class="field-input" id="demo-pin" type="password" autocomplete="current-password" placeholder="Ingresá la clave" required>
-        <p class="admin-login-hint">Clave de esta presentación: <strong>CCZ2026</strong></p>
-        <div class="admin-alert error hidden" id="login-error">La clave no es correcta.</div>
-        <button class="button button-copper button-full" type="submit">Entrar al panel</button>
-        <div class="admin-auth-links"><a href="index.html">← Volver al sitio</a><span>Modo demostración</span></div>
-      </form>
-    </main>
-
-    <main class="static-admin-main hidden" id="admin-panel">
-      <header class="static-admin-header">
-        <div><p class="admin-kicker">CCZ STYLEE · PANEL DEL BARBERO</p><h1>Agenda a domicilio</h1></div>
-        <a href="index.html">Ver página pública ↗</a>
-      </header>
-
-      <p class="admin-demo-banner">Esta es una vista de presentación. Las reservas creadas desde la página se guardan en este dispositivo y aparecen aquí.</p>
-
-      <div class="admin-date-row">
-        <label><span class="field-label">Ver agenda del día</span><input class="field-input" id="admin-date" type="date"></label>
-        <button class="admin-ghost-button" id="today-button" type="button">Hoy</button>
-      </div>
-
-      <section class="admin-summary-grid" aria-label="Resumen del día">
-        <article><span>Turnos</span><strong id="stat-total">0</strong></article>
-        <article><span>Confirmados</span><strong id="stat-confirmed">0</strong></article>
-        <article><span>Facturación prevista</span><strong id="stat-revenue">$0</strong></article>
-      </section>
-
-      <section class="admin-card">
-        <header class="admin-card-head"><h2 id="agenda-title">Agenda</h2><span id="agenda-count">0 turnos</span></header>
-        <div class="demo-appointment-list" id="appointment-list"></div>
-      </section>
-    </main>
-  </body>
+</body>
 </html>
