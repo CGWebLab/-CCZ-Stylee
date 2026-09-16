@@ -833,11 +833,12 @@ const SERVICES = [
 ];
 
 const STORAGE_KEY = "ccz-stylee-demo-bookings";
-const introReveal = document.getElementById("intro-reveal");
-if (introReveal) {
+window.addEventListener("DOMContentLoaded", () => {
+  const introReveal = document.getElementById("intro-reveal");
+  if (!introReveal) return;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.setTimeout(() => introReveal.classList.add("is-complete"), reducedMotion ? 120 : 1750);
-}
+});
 const form = document.querySelector("#booking-form");
 const successPanel = document.querySelector("#booking-success");
 const dateInput = document.querySelector("#booking-date");
