@@ -851,6 +851,9 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 .haircut-copy h3 { font-size: clamp(2.6rem, 5vw, 4rem); }
 .haircut-copy p { max-width: 440px; }
 .booking-demo-notice { margin: 0 0 24px; padding: 14px; background: #edf3fc; color: #214c87; font-size: .82rem; line-height: 1.6; }
+.availability-result { padding: 18px; border: 1px solid var(--line); border-radius: 12px; color: #34465f; line-height: 1.6; font-size: .9rem; }
+.availability-result p { margin: 0; }
+.availability-contact { display: block; margin-top: 18px; text-align: center; color: #285d9f; font-weight: 600; }
 @media (max-width: 720px) {
   .haircut-service { grid-template-columns: 1fr; }
   .haircut-service .service-photo { height: auto; aspect-ratio: 1 / 1.1; }
@@ -954,17 +957,17 @@ body { font-weight: 300; letter-spacing: 0.005em; }
           <div class="booking-intro">
             <p class="eyebrow light">AGENDA ONLINE</p>
             <h2>Reservá.<br><em>Vamos a vos.</em></h2>
-            <p>Elegí el servicio y un horario disponible, dejá la dirección y ArielCCZ coordinará contigo los detalles de la visita.</p>
+            <p>Indicá el servicio, la fecha y tu dirección en Montevideo para consultar disponibilidad.</p>
             <div class="booking-points">
-              <div><span>✓</span><p><strong>Disponibilidad visible</strong><small>Los horarios ocupados quedan bloqueados</small></p></div>
+              <div><span>✓</span><p><strong>Todos los días</strong><small>Atención de 10 a 19 hs</small></p></div>
               <div><span>✓</span><p><strong>Servicio a domicilio</strong><small>Indicás la dirección al reservar</small></p></div>
-              <div><span>✓</span><p><strong>Confirmación inmediata</strong><small>Recibís un código de turno</small></p></div>
+              <div><span>✓</span><p><strong>Atención personalizada</strong><small>Coordiná tu visita con ArielCCZ</small></p></div>
             </div>
           </div>
 
           <form class="booking-panel static-booking-panel" id="booking-form">
-            <div class="booking-panel-head"><div><span>1</span><p>Servicio, horario y domicilio</p></div></div>
-            <p class="booking-demo-notice">Agenda de prueba · Todos los días de 10 a 19 hs. Los horarios todavía no incluyen traslados en ómnibus y no confirman una visita real.</p>
+            <div class="booking-panel-head"><div><span>1</span><p>Servicio, fecha y domicilio</p></div></div>
+            
             <label class="field-label" for="booking-date">Elegí la fecha</label>
             <input class="field-input" id="booking-date" name="date" type="date" required>
 
@@ -973,23 +976,18 @@ body { font-weight: 300; letter-spacing: 0.005em; }
               <div id="service-options"></div>
             </fieldset>
 
+            <label class="full-field"><span class="field-label">Dirección del servicio</span><input class="field-input" id="booking-address" name="address" autocomplete="street-address" placeholder="Calle, número, barrio y ciudad" minlength="5" maxlength="160" required></label>
             <fieldset class="static-fieldset slot-selector">
               <div class="slot-heading">
                 <legend class="field-label" id="slot-label">Horarios disponibles</legend>
-                <span><i></i> Disponible</span><span><i class="busy"></i> Ocupado</span>
+                
               </div>
-              <div class="slot-grid" id="slot-grid"></div>
+              <div class="availability-result" id="slot-grid" role="status" aria-live="polite"></div>
             </fieldset>
 
-            <div class="client-fields">
-              <label><span class="field-label">Nombre y apellido</span><input class="field-input" name="name" autocomplete="name" placeholder="Tu nombre" minlength="2" maxlength="80" required></label>
-              <label><span class="field-label">Celular</span><input class="field-input" name="phone" type="tel" autocomplete="tel" placeholder="09X XXX XXX" required></label>
-              <label class="full-field"><span class="field-label">Dirección del servicio</span><input class="field-input" name="address" autocomplete="street-address" placeholder="Calle, número, barrio y ciudad" minlength="5" maxlength="160" required></label>
-              <label class="full-field"><span class="field-label">Nota para el barbero <em>(opcional)</em></span><textarea class="field-input" name="notes" rows="2" maxlength="120" placeholder="Apartamento, referencias o detalles del corte"></textarea></label>
-            </div>
             <p class="form-error hidden" id="form-error" role="alert"></p>
-            <button class="button button-dark button-full" type="submit" id="submit-booking">Confirmar mi turno <span>→</span></button>
-            <p class="privacy-note">Tus datos y dirección se usan únicamente para coordinar el servicio reservado.</p>
+            <button class="button button-dark button-full" type="submit" id="submit-booking">Consultar disponibilidad <span>→</span></button>
+            <a class="availability-contact" href="https://www.instagram.com/ccz_stylee" target="_blank" rel="noreferrer">Coordinar por Instagram ↗</a>
           </form>
 
           <div class="booking-panel success-panel hidden" id="booking-success" aria-live="polite">
@@ -1154,45 +1152,11 @@ function renderServices() {
 function renderSlots() {
   selectedTime = "";
   slotGrid.innerHTML = "";
-  const dateValue = dateInput.value;
-  const hours = workingHours(dateValue);
-  slotLabel.textContent = `Horarios para ${formatDate(dateValue)}`;
-  if (!hours) {
-    const message = document.createElement("div");
-    message.className = "closed-message";
-    message.textContent = "Ese día no hay atención a domicilio.";
-    slotGrid.append(message);
-    return;
-  }
-
-  const service = SERVICES.find((item) => item.id === selectedServiceId);
-  const locks = allLocks(dateValue);
-  const open = toMinutes(hours.open);
-  const close = toMinutes(hours.close);
-  for (let value = open; value + service.duration <= close; value += 15) {
-    const time = toTime(value);
-    const past = isPastSlot(dateValue, time);
-    let available = !past;
-    for (let offset = 0; offset < service.duration; offset += 15) {
-      if (locks.has(toTime(value + offset))) available = false;
-    }
-    const label = document.createElement("label");
-    label.className = `slot ${available ? "" : "occupied"}`;
-    label.innerHTML = `<input type="radio" name="startTime" value="${time}" ${available ? "" : "disabled"}><strong>${time}</strong><small>${past ? "Ya pasó" : available ? "Disponible" : "Ocupado"}</small>`;
-    if (available) {
-      if (!selectedTime) {
-        selectedTime = time;
-        label.classList.add("selected");
-        label.querySelector("input").checked = true;
-      }
-      label.querySelector("input").addEventListener("change", () => {
-        selectedTime = time;
-        document.querySelectorAll(".slot").forEach((slot) => slot.classList.remove("selected"));
-        label.classList.add("selected");
-      });
-    }
-    slotGrid.append(label);
-  }
+  slotLabel.textContent = "Disponibilidad según tu dirección";
+  const message = document.createElement("p");
+  message.textContent = "Consultá disponibilidad para la fecha y dirección que elegiste.";
+  slotGrid.append(message);
+  formError.classList.add("hidden");
 }
 
 function showError(message) {
@@ -1228,46 +1192,12 @@ function showSuccess(booking) {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  formError.classList.add("hidden");
-  if (!selectedTime) {
-    showError("Elegí un horario disponible.");
+  if (!form.reportValidity()) return;
+  if (dateInput.value < localDate() || dateInput.value > localDate(60)) {
+    showError("Elegí una fecha dentro de los próximos 60 días.");
     return;
   }
-
-  const data = new FormData(form);
-  const service = SERVICES.find((item) => item.id === selectedServiceId);
-  if (dateInput.value < localDate() || dateInput.value > localDate(60) || isPastSlot(dateInput.value, selectedTime) || toMinutes(selectedTime) < 600 || toMinutes(selectedTime) + service.duration > 1140) {
-    showError("Elegí un horario vigente entre las 10 y las 19 hs.");
-    renderSlots();
-    return;
-  }
-  const code = crypto.randomUUID().replaceAll("-", "").slice(0, 8).toUpperCase();
-  const booking = {
-    id: crypto.randomUUID(),
-    code,
-    serviceId: service.id,
-    serviceName: service.name,
-    duration: service.duration,
-    price: service.price,
-    date: dateInput.value,
-    time: selectedTime,
-    name: String(data.get("name") || "").trim(),
-    phone: String(data.get("phone") || "").trim(),
-    address: String(data.get("address") || "").trim(),
-    notes: String(data.get("notes") || "").trim(),
-    status: "confirmed",
-    createdAt: new Date().toISOString(),
-  };
-  const currentLocks = allLocks(booking.date);
-  for (let offset = 0; offset < booking.duration; offset += 15) {
-    if (currentLocks.has(toTime(toMinutes(booking.time) + offset))) {
-      showError("Ese horario acaba de ocuparse. Elegí otro disponible.");
-      renderSlots();
-      return;
-    }
-  }
-  saveBookings([...loadBookings(), booking]);
-  showSuccess(booking);
+  slotGrid.textContent = "La consulta automática aún no está habilitada. Coordiná tu horario con ArielCCZ por Instagram.";
 });
 
 document.querySelector("#new-booking").addEventListener("click", () => {
@@ -1295,6 +1225,8 @@ document.querySelectorAll("[data-service]").forEach((link) => {
     renderSlots();
   });
 });
+
+document.querySelector("#booking-address").addEventListener("input", renderSlots);
 
 </script>
 </body>
