@@ -718,6 +718,13 @@ textarea.field-input { resize: vertical; }
 .status-completed { opacity: 0.55; }
 .status-completed h3 { text-decoration: line-through; }
 .static-no-bookings { padding: 58px 20px; color: var(--muted); text-align: center; }
+.admin-header-actions { display: flex; align-items: center; gap: 14px; }
+.admin-header-actions .admin-ghost-button { padding: 9px 14px; }
+.admin-time-input { min-width: 112px; padding: 9px 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: inherit; }
+.status-pending > time { color: var(--blue); font-size: .67rem; font-weight: 800; letter-spacing: .08em; }
+.status-completed { opacity: .66; }
+.full-field textarea.field-input { min-height: 88px; resize: vertical; font-family: inherit; }
+.button:disabled, .demo-row-actions button:disabled { cursor: wait; opacity: .58; }
 
 @media (max-width: 720px) {
   .static-header { top: 32px; }
@@ -726,6 +733,8 @@ textarea.field-input { resize: vertical; }
   .admin-summary-grid { grid-template-columns: 1fr; }
   .static-admin-main { padding: 28px 15px 70px; }
   .static-admin-header { align-items: flex-start; flex-direction: column; }
+  .admin-header-actions { width: 100%; justify-content: space-between; }
+  .admin-date-row { flex-wrap: wrap; }
   .demo-appointment-list { padding-inline: 15px; }
   .demo-appointment-row { grid-template-columns: 58px 1fr; gap: 10px; padding: 16px 0; }
   .demo-row-actions { grid-column: 2; }
@@ -851,6 +860,28 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 .availability-result { padding: 18px; border: 1px solid var(--line); border-radius: 12px; color: #34465f; line-height: 1.6; font-size: .9rem; }
 .availability-result p { margin: 0; }
 .availability-contact { display: block; margin-top: 18px; text-align: center; color: #285d9f; font-weight: 600; }
+:root { --marble: url('assets/marble-white.webp'); }
+body, .services-section, .experience-section, .booking-section, .hero, .site-footer, .admin-page-shell, .admin-auth-screen {
+  background-color: #fff;
+  background-image: linear-gradient(rgba(255,255,255,.24),rgba(255,255,255,.24)), var(--marble);
+  background-size: auto, 1050px 1050px;
+  background-position: center, center var(--marble-y, 0px);
+}
+.site-header, .intro-panel { background-image: linear-gradient(rgba(255,255,255,.5),rgba(255,255,255,.5)),var(--marble); background-size: auto,1050px; }
+.hero-shade::before { content: ''; position: absolute; inset: 0; background: var(--marble) center var(--marble-y, 0px) / 1050px; opacity: .78; -webkit-mask-image: linear-gradient(90deg,#000 0%,#000 30%,transparent 70%); mask-image: linear-gradient(90deg,#000 0%,#000 30%,transparent 70%); pointer-events: none; }
+.haircut-service, .haircut-service:hover { background: rgba(255,255,255,.56); color: var(--ink); border-radius: 16px; overflow: hidden; box-shadow: 0 16px 42px rgba(20,38,60,.07); }
+.haircut-service:hover p { color: var(--muted); }
+.haircut-service:hover .service-price, .haircut-service:hover .service-number { color: var(--copper); }
+.haircut-service:hover a { background: #3f73bf; color: #fff; }
+.service-grid { border: 0; gap: 32px; }
+.visagism-service { border-radius: 16px; overflow: hidden; background: #3f73bf; }
+.booking-panel, .admin-auth-card, .admin-card, .admin-summary-grid article { background: rgba(255,255,255,.94); }
+.experience-quote { background: rgba(255,255,255,.64); }
+.site-footer { color: #090909; border-top: 1px solid var(--line); }
+.site-footer p, .site-footer a, .site-footer span { color: #465160; }
+.site-footer .brand-monogram, .site-footer strong { color: #090909; }
+.footer-bottom { border-top-color: var(--line); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 @media (max-width: 720px) {
   .haircut-service { grid-template-columns: 1fr; }
   .haircut-service .service-photo { height: auto; aspect-ratio: 1 / 1.1; }
@@ -858,6 +889,7 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 }
 
 </style>
+    
     
   </head>
   <body class="admin-page-shell">
@@ -867,28 +899,29 @@ body { font-weight: 300; letter-spacing: 0.005em; }
         <span class="admin-auth-icon">✦</span>
         <p class="admin-kicker">ACCESO DEL BARBERO</p>
         <h1>Tu agenda, en un solo lugar.</h1>
-        <p>Ingresá la clave de presentación para ver reservas, domicilios y estado de cada turno.</p>
-        <label class="field-label" for="demo-pin">Clave de acceso</label>
-        <input class="field-input" id="demo-pin" type="password" autocomplete="current-password" placeholder="Ingresá la clave" required>
-        <p class="admin-login-hint">Clave de esta presentación: <strong>CCZ2026</strong></p>
-        <div class="admin-alert error hidden" id="login-error">La clave no es correcta.</div>
+        <p>Ingresá con la cuenta privada de ArielCCZ para administrar solicitudes y turnos.</p>
+        <label class="field-label" for="admin-email">Correo</label>
+        <input class="field-input" id="admin-email" type="email" autocomplete="username" placeholder="correo@ejemplo.com" required>
+        <label class="field-label" for="admin-password">Contraseña</label>
+        <input class="field-input" id="admin-password" type="password" autocomplete="current-password" placeholder="Tu contraseña" required>
+        <div class="admin-alert error hidden" id="login-error">No se pudo iniciar sesión.</div>
         <button class="button button-copper button-full" type="submit">Entrar al panel</button>
-        <div class="admin-auth-links"><a href="index.html">← Volver al sitio</a><span>Modo demostración</span></div>
+        <div class="admin-auth-links"><a href="index.html">← Volver al sitio</a><span>Acceso privado</span></div>
       </form>
     </main>
 
     <main class="static-admin-main hidden" id="admin-panel">
       <header class="static-admin-header">
         <div><p class="admin-kicker">ArielCCZ · PANEL DEL BARBERO</p><h1>Agenda a domicilio</h1></div>
-        <a href="index.html">Ver página pública ↗</a>
+        <div class="admin-header-actions"><a href="index.html">Ver página pública ↗</a><button class="admin-ghost-button" id="logout-button" type="button">Salir</button></div>
       </header>
 
-      <p class="admin-demo-banner">Esta es una vista de presentación. Las reservas creadas desde la página se guardan en este dispositivo y aparecen aquí.</p>
-      <p class="admin-demo-banner">Atención en todo Montevideo · Todos los días, de 10 a 19 hs · Corte: 45 minutos. El cálculo de traslados en transporte público está pendiente de conexión.</p>
+      <p class="admin-demo-banner">Solicitudes compartidas en tiempo real. Confirmá una hora únicamente después de revisar el traslado en transporte público.</p>
 
       <div class="admin-date-row">
         <label><span class="field-label">Ver agenda del día</span><input class="field-input" id="admin-date" type="date"></label>
         <button class="admin-ghost-button" id="today-button" type="button">Hoy</button>
+        <button class="admin-ghost-button" id="refresh-button" type="button">Actualizar</button>
       </div>
 
       <section class="admin-summary-grid" aria-label="Resumen del día">
@@ -903,46 +936,42 @@ body { font-weight: 300; letter-spacing: 0.005em; }
       </section>
     </main>
   <script>
-const STORAGE_KEY = "ccz-stylee-demo-bookings";
+const SUPABASE_URL = "https://ytjwtjnxqjkaieqqlwju.supabase.co";
+const SUPABASE_KEY = "sb_publishable_eugBykoPQ9_St027-mjZUg_OiSieHxQ";
+const SESSION_KEY = "arielccz-admin-session";
+const SERVICES = {
+  corte: { name: "Corte", price: 800, duration: 45 },
+  visagismo: { name: "Corte + asesoría visagista", price: 1800, duration: 90 },
+};
+
 const loginScreen = document.querySelector("#login-screen");
 const adminPanel = document.querySelector("#admin-panel");
 const dateInput = document.querySelector("#admin-date");
 const appointmentList = document.querySelector("#appointment-list");
+const loginError = document.querySelector("#login-error");
+let session = null;
+let requests = [];
 
-function localDate(daysFromToday = 0) {
-  const date = new Date();
-  date.setDate(date.getDate() + daysFromToday);
-  const offset = date.getTimezoneOffset();
-  return new Date(date.getTime() - offset * 60_000).toISOString().slice(0, 10);
-}
-
-function loadBookings() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  } catch {
-    return [];
-  }
-}
-
-function saveBookings(bookings) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
+function localDate() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Montevideo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 }
 
 function formatPrice(value) {
-  return new Intl.NumberFormat("es-UY", {
-    style: "currency",
-    currency: "UYU",
-    maximumFractionDigits: 0,
-  }).format(value);
+  return new Intl.NumberFormat("es-UY", { style: "currency", currency: "UYU", maximumFractionDigits: 0 }).format(value);
 }
 
 function formatDate(value) {
-  return new Intl.DateTimeFormat("es-UY", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    timeZone: "UTC",
-  }).format(new Date(`${value}T12:00:00Z`));
+  return new Intl.DateTimeFormat("es-UY", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${value}T12:00:00Z`));
+}
+
+function minutesToTime(value) {
+  if (value === null || value === undefined) return "";
+  return `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(value % 60).padStart(2, "0")}`;
+}
+
+function timeToMinutes(value) {
+  const [hours, minutes] = value.split(":").map(Number);
+  return hours * 60 + minutes;
 }
 
 function createTextElement(tag, text, className = "") {
@@ -952,83 +981,209 @@ function createTextElement(tag, text, className = "") {
   return element;
 }
 
-function updateBooking(id, status) {
-  saveBookings(loadBookings().map((booking) => booking.id === id ? { ...booking, status } : booking));
-  renderAgenda();
+function saveSession(value) {
+  session = value;
+  if (value) sessionStorage.setItem(SESSION_KEY, JSON.stringify(value));
+  else sessionStorage.removeItem(SESSION_KEY);
 }
 
-function removeBooking(id) {
-  if (!window.confirm("¿Querés liberar este horario?")) return;
-  saveBookings(loadBookings().filter((booking) => booking.id !== id));
-  renderAgenda();
+function readSession() {
+  try {
+    return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+  } catch {
+    return null;
+  }
 }
 
-function renderRow(booking) {
+async function authRequest(path, options = {}) {
+  const response = await fetch(`${SUPABASE_URL}${path}`, {
+    ...options,
+    headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json", ...(options.headers || {}) },
+  });
+  const data = response.status === 204 ? null : await response.json().catch(() => null);
+  if (!response.ok) throw new Error(data?.msg || data?.message || "No se pudo completar la operación.");
+  return data;
+}
+
+async function refreshSession() {
+  if (!session?.refresh_token) throw new Error("Sesión vencida.");
+  const fresh = await authRequest("/auth/v1/token?grant_type=refresh_token", {
+    method: "POST",
+    body: JSON.stringify({ refresh_token: session.refresh_token }),
+  });
+  saveSession(fresh);
+}
+
+async function api(path, options = {}, retry = true) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...options,
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${session.access_token}`,
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+  if (response.status === 401 && retry) {
+    await refreshSession();
+    return api(path, options, false);
+  }
+  const data = response.status === 204 ? null : await response.json().catch(() => null);
+  if (!response.ok) throw new Error(data?.message || "No se pudo completar la operación.");
+  return data;
+}
+
+async function verifyAdmin() {
+  const rows = await api(`barber_admins?select=user_id&user_id=eq.${encodeURIComponent(session.user.id)}`);
+  if (!rows.length) throw new Error("Esta cuenta no tiene permiso para administrar ArielCCZ.");
+}
+
+function showPanel() {
+  loginScreen.classList.add("hidden");
+  adminPanel.classList.remove("hidden");
+  dateInput.value = dateInput.value || localDate();
+  loadRequests();
+}
+
+function showLogin(message = "") {
+  saveSession(null);
+  adminPanel.classList.add("hidden");
+  loginScreen.classList.remove("hidden");
+  if (message) {
+    loginError.textContent = message;
+    loginError.classList.remove("hidden");
+  }
+}
+
+async function updateRequest(id, changes) {
+  await api(`booking_requests?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: { Prefer: "return=minimal" },
+    body: JSON.stringify(changes),
+  });
+  await loadRequests();
+}
+
+function makeActionButton(text, className, action) {
+  const button = createTextElement("button", text, className);
+  button.type = "button";
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    try {
+      await action();
+    } catch (error) {
+      window.alert(error.message.includes("conflict") || error.message.includes("exclusion")
+        ? "Ese horario se superpone con otro turno."
+        : error.message);
+      button.disabled = false;
+    }
+  });
+  return button;
+}
+
+function renderRow(request) {
+  const service = SERVICES[request.service_id];
   const row = document.createElement("article");
-  row.className = `demo-appointment-row ${booking.status === "completed" ? "status-completed" : ""}`;
-  row.append(createTextElement("time", booking.time));
+  row.className = `demo-appointment-row status-${request.status}`;
+  const timing = request.status === "pending"
+    ? "PENDIENTE"
+    : minutesToTime(request.start_minute);
+  row.append(createTextElement("time", timing));
 
   const main = document.createElement("div");
-  main.append(createTextElement("h3", `${booking.name} · ${booking.serviceName}`));
-  main.append(createTextElement("p", `${booking.phone} · ${formatPrice(booking.price)}`));
-  main.append(createTextElement("small", `Domicilio: ${booking.address}${booking.notes ? ` · ${booking.notes}` : ""}`));
+  main.append(createTextElement("h3", `${request.customer_name} · ${service.name}`));
+  main.append(createTextElement("p", `${request.phone} · ${formatPrice(service.price)} · ${service.duration} min`));
+  main.append(createTextElement("small", `Domicilio: ${request.address}${request.notes ? ` · ${request.notes}` : ""}`));
   row.append(main);
 
   const actions = document.createElement("div");
   actions.className = "demo-row-actions";
-  if (booking.status !== "completed") {
-    const complete = createTextElement("button", "Completar");
-    complete.type = "button";
-    complete.addEventListener("click", () => updateBooking(booking.id, "completed"));
-    actions.append(complete);
+  if (request.status === "pending") {
+    const time = document.createElement("input");
+    time.type = "time";
+    time.min = "10:00";
+    time.max = request.service_id === "corte" ? "18:15" : "17:30";
+    time.value = "10:00";
+    time.className = "admin-time-input";
+    actions.append(time);
+    actions.append(makeActionButton("Confirmar hora", "", () => updateRequest(request.id, {
+      status: "confirmed",
+      confirmed_date: dateInput.value,
+      start_minute: timeToMinutes(time.value),
+      travel_reviewed: true,
+    })));
+  } else if (request.status === "confirmed") {
+    actions.append(makeActionButton("Completar", "", () => updateRequest(request.id, { status: "completed" })));
   }
-  const remove = createTextElement("button", "Liberar", "danger");
-  remove.type = "button";
-  remove.addEventListener("click", () => removeBooking(booking.id));
-  actions.append(remove);
+  if (request.status !== "cancelled" && request.status !== "completed") {
+    actions.append(makeActionButton("Cancelar", "danger", () => {
+      if (!window.confirm("¿Querés cancelar esta solicitud?")) return Promise.resolve();
+      return updateRequest(request.id, { status: "cancelled" });
+    }));
+  }
   row.append(actions);
   return row;
 }
 
 function renderAgenda() {
-  const bookings = loadBookings()
-    .filter((booking) => booking.date === dateInput.value && booking.status !== "cancelled")
-    .sort((a, b) => a.time.localeCompare(b.time));
+  const selectedDate = dateInput.value;
+  const visible = requests
+    .filter((item) => item.status === "pending"
+      ? item.requested_date === selectedDate
+      : item.confirmed_date === selectedDate && item.status !== "cancelled")
+    .sort((a, b) => (a.start_minute ?? -1) - (b.start_minute ?? -1));
 
   appointmentList.innerHTML = "";
-  if (bookings.length === 0) {
+  if (!visible.length) {
     const empty = document.createElement("div");
     empty.className = "static-no-bookings";
-    empty.innerHTML = "<strong>No hay turnos para este día.</strong><br><span>Probá una reserva desde la página pública para verla acá.</span>";
+    empty.innerHTML = "<strong>No hay solicitudes para este día.</strong><br><span>Las nuevas solicitudes aparecerán automáticamente.</span>";
     appointmentList.append(empty);
   } else {
-    bookings.forEach((booking) => appointmentList.append(renderRow(booking)));
+    visible.forEach((request) => appointmentList.append(renderRow(request)));
   }
-
-  const confirmed = bookings.filter((booking) => booking.status === "confirmed");
-  document.querySelector("#stat-total").textContent = bookings.length;
+  const confirmed = visible.filter((item) => item.status === "confirmed" || item.status === "completed");
+  document.querySelector("#stat-total").textContent = visible.length;
   document.querySelector("#stat-confirmed").textContent = confirmed.length;
-  document.querySelector("#stat-revenue").textContent = formatPrice(confirmed.reduce((sum, booking) => sum + booking.price, 0));
-  document.querySelector("#agenda-title").textContent = formatDate(dateInput.value);
-  document.querySelector("#agenda-count").textContent = `${bookings.length} ${bookings.length === 1 ? "turno" : "turnos"}`;
+  document.querySelector("#stat-revenue").textContent = formatPrice(confirmed.reduce((sum, item) => sum + SERVICES[item.service_id].price, 0));
+  document.querySelector("#agenda-title").textContent = formatDate(selectedDate);
+  document.querySelector("#agenda-count").textContent = `${visible.length} ${visible.length === 1 ? "solicitud" : "solicitudes"}`;
 }
 
-function openPanel() {
-  loginScreen.classList.add("hidden");
-  adminPanel.classList.remove("hidden");
-  dateInput.value = localDate();
-  renderAgenda();
-}
-
-document.querySelector("#login-form").addEventListener("submit", (event) => {
-  event.preventDefault();
-  const pin = document.querySelector("#demo-pin").value.trim().toUpperCase();
-  if (pin !== "CCZ2026") {
-    document.querySelector("#login-error").classList.remove("hidden");
-    return;
+async function loadRequests() {
+  appointmentList.innerHTML = '<div class="static-no-bookings">Actualizando agenda…</div>';
+  try {
+    requests = await api("booking_requests?select=*&order=created_at.desc");
+    renderAgenda();
+  } catch (error) {
+    if (error.message === "Sesión vencida.") showLogin(error.message);
+    else appointmentList.innerHTML = `<div class="static-no-bookings"><strong>No se pudo cargar la agenda.</strong><br><span>${error.message}</span></div>`;
   }
-  sessionStorage.setItem("ccz-demo-admin", "1");
-  openPanel();
+}
+
+document.querySelector("#login-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  loginError.classList.add("hidden");
+  const button = event.currentTarget.querySelector('button[type="submit"]');
+  button.disabled = true;
+  button.textContent = "Ingresando…";
+  try {
+    const auth = await authRequest("/auth/v1/token?grant_type=password", {
+      method: "POST",
+      body: JSON.stringify({
+        email: document.querySelector("#admin-email").value.trim(),
+        password: document.querySelector("#admin-password").value,
+      }),
+    });
+    saveSession(auth);
+    await verifyAdmin();
+    showPanel();
+  } catch (error) {
+    showLogin(error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Entrar al panel";
+  }
 });
 
 dateInput.addEventListener("change", renderAgenda);
@@ -1036,8 +1191,77 @@ document.querySelector("#today-button").addEventListener("click", () => {
   dateInput.value = localDate();
   renderAgenda();
 });
+document.querySelector("#refresh-button").addEventListener("click", loadRequests);
+document.querySelector("#logout-button").addEventListener("click", async () => {
+  try {
+    if (session?.access_token) await authRequest("/auth/v1/logout", { method: "POST", headers: { Authorization: `Bearer ${session.access_token}` } });
+  } finally {
+    showLogin();
+  }
+});
 
-if (sessionStorage.getItem("ccz-demo-admin") === "1") openPanel();
+(async () => {
+  session = readSession();
+  if (!session) return;
+  try {
+    await verifyAdmin();
+    showPanel();
+  } catch {
+    try {
+      await refreshSession();
+      await verifyAdmin();
+      showPanel();
+    } catch {
+      showLogin("Volvé a ingresar para continuar.");
+    }
+  }
+})();
+
+window.setInterval(() => {
+  if (!adminPanel.classList.contains("hidden")) loadRequests();
+}, 30000);
+
+</script>
+<script>
+(() => {
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (preference.matches) return;
+  const animations = new Set();
+  let observer;
+  let frame = 0;
+  const update = () => {
+    document.documentElement.style.setProperty('--marble-y', `${Math.round(window.scrollY * -0.06)}px`);
+    frame = 0;
+  };
+  const scroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+  if ('IntersectionObserver' in window && Element.prototype.animate) {
+    observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        if (preference.matches) return;
+        const animation = entry.target.animate([
+          { opacity: 0.2, transform: 'translateY(24px)' },
+          { opacity: 1, transform: 'translateY(0)' }
+        ], { duration: 700, easing: 'cubic-bezier(.22,.8,.2,1)' });
+        animations.add(animation);
+        animation.onfinish = () => animations.delete(animation);
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.section-heading, .haircut-service, .visagism-copy, .visagism-delivery, .booking-intro, .booking-panel, .experience-copy, .experience-quote, .final-cta .page-shell, .footer-grid, .admin-card').forEach(element => observer.observe(element));
+  }
+  window.addEventListener('scroll', scroll, { passive: true });
+  update();
+  preference.addEventListener('change', event => {
+    if (!event.matches) return;
+    window.removeEventListener('scroll', scroll);
+    cancelAnimationFrame(frame);
+    observer?.disconnect();
+    animations.forEach(animation => animation.cancel());
+    animations.clear();
+    document.documentElement.style.removeProperty('--marble-y');
+  });
+})();
 
 </script>
 </body>

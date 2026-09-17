@@ -721,6 +721,13 @@ textarea.field-input { resize: vertical; }
 .status-completed { opacity: 0.55; }
 .status-completed h3 { text-decoration: line-through; }
 .static-no-bookings { padding: 58px 20px; color: var(--muted); text-align: center; }
+.admin-header-actions { display: flex; align-items: center; gap: 14px; }
+.admin-header-actions .admin-ghost-button { padding: 9px 14px; }
+.admin-time-input { min-width: 112px; padding: 9px 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: inherit; }
+.status-pending > time { color: var(--blue); font-size: .67rem; font-weight: 800; letter-spacing: .08em; }
+.status-completed { opacity: .66; }
+.full-field textarea.field-input { min-height: 88px; resize: vertical; font-family: inherit; }
+.button:disabled, .demo-row-actions button:disabled { cursor: wait; opacity: .58; }
 
 @media (max-width: 720px) {
   .static-header { top: 32px; }
@@ -729,6 +736,8 @@ textarea.field-input { resize: vertical; }
   .admin-summary-grid { grid-template-columns: 1fr; }
   .static-admin-main { padding: 28px 15px 70px; }
   .static-admin-header { align-items: flex-start; flex-direction: column; }
+  .admin-header-actions { width: 100%; justify-content: space-between; }
+  .admin-date-row { flex-wrap: wrap; }
   .demo-appointment-list { padding-inline: 15px; }
   .demo-appointment-row { grid-template-columns: 58px 1fr; gap: 10px; padding: 16px 0; }
   .demo-row-actions { grid-column: 2; }
@@ -935,8 +944,8 @@ body, .services-section, .experience-section, .booking-section, .hero, .site-foo
         </div>
         <div class="hero-foot page-shell" aria-label="Cómo reservar">
           <div><strong>01</strong><span>Elegí el servicio</span></div>
-          <div><strong>02</strong><span>Seleccioná un horario libre</span></div>
-          <div><strong>03</strong><span>Indicá tu domicilio</span></div>
+          <div><strong>02</strong><span>Indicá fecha y domicilio</span></div>
+          <div><strong>03</strong><span>Recibí la confirmación</span></div>
         </div>
       </section>
 
@@ -999,7 +1008,11 @@ body, .services-section, .experience-section, .booking-section, .hero, .site-foo
               <div id="service-options"></div>
             </fieldset>
 
+            <label class="full-field"><span class="field-label">Nombre y apellido</span><input class="field-input" id="booking-name" name="name" autocomplete="name" minlength="2" maxlength="80" required></label>
+            <label class="full-field"><span class="field-label">Teléfono o WhatsApp</span><input class="field-input" id="booking-phone" name="phone" type="tel" autocomplete="tel" minlength="6" maxlength="30" placeholder="Ej.: 099 123 456" required></label>
+
             <label class="full-field"><span class="field-label">Dirección del servicio</span><input class="field-input" id="booking-address" name="address" autocomplete="street-address" placeholder="Calle, número, barrio y ciudad" minlength="5" maxlength="160" required></label>
+            <label class="full-field"><span class="field-label">Aclaraciones (opcional)</span><textarea class="field-input" id="booking-notes" name="notes" maxlength="500" rows="3" placeholder="Apartamento, esquina o referencia"></textarea></label>
             <fieldset class="static-fieldset slot-selector">
               <div class="slot-heading">
                 <legend class="field-label" id="slot-label">Horarios disponibles</legend>
@@ -1009,15 +1022,15 @@ body, .services-section, .experience-section, .booking-section, .hero, .site-foo
             </fieldset>
 
             <p class="form-error hidden" id="form-error" role="alert"></p>
-            <button class="button button-dark button-full" type="submit" id="submit-booking">Consultar disponibilidad <span>→</span></button>
+            <button class="button button-dark button-full" type="submit" id="submit-booking">Enviar solicitud <span>→</span></button>
             <a class="availability-contact" href="https://www.instagram.com/ccz_stylee" target="_blank" rel="noreferrer">Coordinar por Instagram ↗</a>
           </form>
 
           <div class="booking-panel success-panel hidden" id="booking-success" aria-live="polite">
             <span class="success-check">✓</span>
-            <p class="eyebrow">TURNO CONFIRMADO</p>
+            <p class="eyebrow">SOLICITUD RECIBIDA</p>
             <h3 id="success-title">Listo.</h3>
-            <p>Guardá este código para identificar tu reserva.</p>
+            <p>Guardá este código. Ariel revisará los traslados y se comunicará contigo para confirmar la hora.</p>
             <div class="booking-code" id="success-code"></div>
             <dl class="booking-summary" id="success-summary"></dl>
             <p class="success-coordination">ArielCCZ se comunicará contigo para coordinar los detalles de la visita.</p>
@@ -1055,22 +1068,24 @@ body, .services-section, .experience-section, .booking-section, .hero, .site-foo
           <div><strong>Navegación</strong><a href="#servicios">Servicios</a><a href="#reservar">Reservar</a><a href="#experiencia">ArielCCZ</a></div>
           <div><strong>Contacto</strong><a href="https://www.instagram.com/ccz_stylee" target="_blank" rel="noreferrer">@ccz_stylee</a><span>Ariel Caraballo · Barbero Visagista</span><a href="barbero.html">Panel del barbero</a></div>
         </div>
-        <div class="page-shell footer-bottom"><span>© <span id="year"></span> ArielCCZ</span><span>Versión de presentación.</span></div>
+        <div class="page-shell footer-bottom"><span>© <span id="year"></span> ArielCCZ</span><span>Barbería a domicilio · Montevideo</span></div>
       </footer>
     </main>
   <script>
+const SUPABASE_URL = "https://ytjwtjnxqjkaieqqlwju.supabase.co";
+const SUPABASE_KEY = "sb_publishable_eugBykoPQ9_St027-mjZUg_OiSieHxQ";
 const SERVICES = [
   { id: "corte", name: "Corte", duration: 45, price: 800 },
   { id: "visagismo", name: "Corte + asesoría visagista", duration: 90, price: 1800 },
 ];
 
-const STORAGE_KEY = "ccz-stylee-demo-bookings";
 window.addEventListener("DOMContentLoaded", () => {
   const introReveal = document.getElementById("intro-reveal");
   if (!introReveal) return;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.setTimeout(() => introReveal.classList.add("is-complete"), reducedMotion ? 120 : 1750);
 });
+
 const form = document.querySelector("#booking-form");
 const successPanel = document.querySelector("#booking-success");
 const dateInput = document.querySelector("#booking-date");
@@ -1078,9 +1093,8 @@ const serviceOptions = document.querySelector("#service-options");
 const slotGrid = document.querySelector("#slot-grid");
 const slotLabel = document.querySelector("#slot-label");
 const formError = document.querySelector("#form-error");
-
+const submitButton = document.querySelector("#submit-booking");
 let selectedServiceId = SERVICES[0].id;
-let selectedTime = "";
 
 function localDate(daysFromToday = 0) {
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Montevideo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
@@ -1090,66 +1104,11 @@ function localDate(daysFromToday = 0) {
 }
 
 function formatPrice(value) {
-  return new Intl.NumberFormat("es-UY", {
-    style: "currency",
-    currency: "UYU",
-    maximumFractionDigits: 0,
-  }).format(value);
+  return new Intl.NumberFormat("es-UY", { style: "currency", currency: "UYU", maximumFractionDigits: 0 }).format(value);
 }
 
 function formatDate(value) {
-  return new Intl.DateTimeFormat("es-UY", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    timeZone: "UTC",
-  }).format(new Date(`${value}T12:00:00Z`));
-}
-
-function toMinutes(value) {
-  const [hours, minutes] = value.split(":").map(Number);
-  return hours * 60 + minutes;
-}
-
-function toTime(value) {
-  const hours = Math.floor(value / 60);
-  const minutes = value % 60;
-  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-}
-
-function loadBookings() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  } catch {
-    return [];
-  }
-}
-
-function saveBookings(bookings) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
-}
-
-function workingHours(dateValue) {
-  return { open: "10:00", close: "19:00" };
-}
-
-function isPastSlot(dateValue, time) {
-  return new Date(`${dateValue}T${time}:00-03:00`).getTime() <= Date.now();
-}
-
-function bookingLocks(dateValue) {
-  const locks = [];
-  loadBookings()
-    .filter((booking) => booking.date === dateValue && booking.status !== "cancelled")
-    .forEach((booking) => {
-      const start = toMinutes(booking.time);
-      for (let offset = 0; offset < booking.duration; offset += 15) locks.push(toTime(start + offset));
-    });
-  return locks;
-}
-
-function allLocks(dateValue) {
-  return new Set(bookingLocks(dateValue));
+  return new Intl.DateTimeFormat("es-UY", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${value}T12:00:00Z`));
 }
 
 function renderServices() {
@@ -1164,21 +1123,15 @@ function renderServices() {
       <b>${formatPrice(service.price)}</b>`;
     label.querySelector("input").addEventListener("change", () => {
       selectedServiceId = service.id;
-      selectedTime = "";
       renderServices();
-      renderSlots();
     });
     serviceOptions.append(label);
   });
 }
 
-function renderSlots() {
-  selectedTime = "";
-  slotGrid.innerHTML = "";
-  slotLabel.textContent = "Disponibilidad según tu dirección";
-  const message = document.createElement("p");
-  message.textContent = "Consultá disponibilidad para la fecha y dirección que elegiste.";
-  slotGrid.append(message);
+function renderAvailabilityMessage() {
+  slotLabel.textContent = "Confirmación del horario";
+  slotGrid.innerHTML = "<p>Enviá tu solicitud. Ariel revisará el recorrido en transporte público y te ofrecerá la primera hora posible.</p>";
   formError.classList.add("hidden");
 }
 
@@ -1198,38 +1151,70 @@ function addSummaryItem(container, label, value, full = false) {
   container.append(item);
 }
 
-function showSuccess(booking) {
-  document.querySelector("#success-title").textContent = `Listo, ${booking.name.split(" ")[0]}.`;
-  document.querySelector("#success-code").textContent = booking.code;
+function showSuccess(request, service) {
+  document.querySelector("#success-title").textContent = `Gracias, ${request.customer_name.split(" ")[0]}.`;
+  document.querySelector("#success-code").textContent = request.id.slice(0, 8).toUpperCase();
   const summary = document.querySelector("#success-summary");
   summary.innerHTML = "";
-  addSummaryItem(summary, "Servicio", booking.serviceName);
-  addSummaryItem(summary, "Fecha", formatDate(booking.date));
-  addSummaryItem(summary, "Hora", `${booking.time} hs`);
-  addSummaryItem(summary, "Valor", formatPrice(booking.price));
-  addSummaryItem(summary, "Domicilio", booking.address, true);
+  addSummaryItem(summary, "Servicio", service.name);
+  addSummaryItem(summary, "Fecha solicitada", formatDate(request.requested_date));
+  addSummaryItem(summary, "Valor", formatPrice(service.price));
+  addSummaryItem(summary, "Domicilio", request.address, true);
   form.classList.add("hidden");
   successPanel.classList.remove("hidden");
   successPanel.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-form.addEventListener("submit", (event) => {
+async function sendRequest(payload) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/booking_requests`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw new Error(`request_failed_${response.status}`);
+}
+
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!form.reportValidity()) return;
   if (dateInput.value < localDate() || dateInput.value > localDate(60)) {
     showError("Elegí una fecha dentro de los próximos 60 días.");
     return;
   }
-  slotGrid.textContent = "La consulta automática aún no está habilitada. Coordiná tu horario con ArielCCZ por Instagram.";
+  const service = SERVICES.find((item) => item.id === selectedServiceId);
+  const payload = {
+    id: crypto.randomUUID(),
+    customer_name: document.querySelector("#booking-name").value.trim(),
+    phone: document.querySelector("#booking-phone").value.trim(),
+    address: document.querySelector("#booking-address").value.trim(),
+    notes: document.querySelector("#booking-notes").value.trim() || null,
+    requested_date: dateInput.value,
+    service_id: service.id,
+  };
+  formError.classList.add("hidden");
+  submitButton.disabled = true;
+  submitButton.textContent = "Enviando…";
+  try {
+    await sendRequest(payload);
+    showSuccess(payload, service);
+  } catch {
+    showError("No pudimos enviar la solicitud. Revisá tu conexión e intentá nuevamente.");
+  } finally {
+    submitButton.disabled = false;
+    submitButton.innerHTML = "Enviar solicitud <span>→</span>";
+  }
 });
 
 document.querySelector("#new-booking").addEventListener("click", () => {
   form.reset();
   selectedServiceId = SERVICES[0].id;
-  selectedTime = "";
   dateInput.value = localDate();
   renderServices();
-  renderSlots();
+  renderAvailabilityMessage();
   successPanel.classList.add("hidden");
   form.classList.remove("hidden");
 });
@@ -1237,19 +1222,16 @@ document.querySelector("#new-booking").addEventListener("click", () => {
 dateInput.min = localDate();
 dateInput.max = localDate(60);
 dateInput.value = localDate();
-dateInput.addEventListener("change", renderSlots);
+dateInput.addEventListener("change", renderAvailabilityMessage);
 document.querySelector("#year").textContent = new Date().getFullYear();
 renderServices();
-renderSlots();
+renderAvailabilityMessage();
 document.querySelectorAll("[data-service]").forEach((link) => {
   link.addEventListener("click", () => {
     selectedServiceId = link.dataset.service;
     renderServices();
-    renderSlots();
   });
 });
-
-document.querySelector("#booking-address").addEventListener("input", renderSlots);
 
 </script>
 <script>
