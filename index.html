@@ -854,6 +854,28 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 .availability-result { padding: 18px; border: 1px solid var(--line); border-radius: 12px; color: #34465f; line-height: 1.6; font-size: .9rem; }
 .availability-result p { margin: 0; }
 .availability-contact { display: block; margin-top: 18px; text-align: center; color: #285d9f; font-weight: 600; }
+:root { --marble: url('assets/marble-white.webp'); }
+body, .services-section, .experience-section, .booking-section, .hero, .site-footer, .admin-page-shell, .admin-auth-screen {
+  background-color: #fff;
+  background-image: linear-gradient(rgba(255,255,255,.24),rgba(255,255,255,.24)), var(--marble);
+  background-size: auto, 1050px 1050px;
+  background-position: center, center var(--marble-y, 0px);
+}
+.site-header, .intro-panel { background-image: linear-gradient(rgba(255,255,255,.5),rgba(255,255,255,.5)),var(--marble); background-size: auto,1050px; }
+.hero-shade::before { content: ''; position: absolute; inset: 0; background: var(--marble) center var(--marble-y, 0px) / 1050px; opacity: .78; -webkit-mask-image: linear-gradient(90deg,#000 0%,#000 30%,transparent 70%); mask-image: linear-gradient(90deg,#000 0%,#000 30%,transparent 70%); pointer-events: none; }
+.haircut-service, .haircut-service:hover { background: rgba(255,255,255,.56); color: var(--ink); border-radius: 16px; overflow: hidden; box-shadow: 0 16px 42px rgba(20,38,60,.07); }
+.haircut-service:hover p { color: var(--muted); }
+.haircut-service:hover .service-price, .haircut-service:hover .service-number { color: var(--copper); }
+.haircut-service:hover a { background: #3f73bf; color: #fff; }
+.service-grid { border: 0; gap: 32px; }
+.visagism-service { border-radius: 16px; overflow: hidden; background: #3f73bf; }
+.booking-panel, .admin-auth-card, .admin-card, .admin-summary-grid article { background: rgba(255,255,255,.94); }
+.experience-quote { background: rgba(255,255,255,.64); }
+.site-footer { color: #090909; border-top: 1px solid var(--line); }
+.site-footer p, .site-footer a, .site-footer span { color: #465160; }
+.site-footer .brand-monogram, .site-footer strong { color: #090909; }
+.footer-bottom { border-top-color: var(--line); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 @media (max-width: 720px) {
   .haircut-service { grid-template-columns: 1fr; }
   .haircut-service .service-photo { height: auto; aspect-ratio: 1 / 1.1; }
@@ -861,6 +883,7 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 }
 
 </style>
+    
     
   </head>
   <body>
@@ -1227,6 +1250,48 @@ document.querySelectorAll("[data-service]").forEach((link) => {
 });
 
 document.querySelector("#booking-address").addEventListener("input", renderSlots);
+
+</script>
+<script>
+(() => {
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (preference.matches) return;
+  const animations = new Set();
+  let observer;
+  let frame = 0;
+  const update = () => {
+    document.documentElement.style.setProperty('--marble-y', `${Math.round(window.scrollY * -0.06)}px`);
+    frame = 0;
+  };
+  const scroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+  if ('IntersectionObserver' in window && Element.prototype.animate) {
+    observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        if (preference.matches) return;
+        const animation = entry.target.animate([
+          { opacity: 0.2, transform: 'translateY(24px)' },
+          { opacity: 1, transform: 'translateY(0)' }
+        ], { duration: 700, easing: 'cubic-bezier(.22,.8,.2,1)' });
+        animations.add(animation);
+        animation.onfinish = () => animations.delete(animation);
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.section-heading, .haircut-service, .visagism-copy, .visagism-delivery, .booking-intro, .booking-panel, .experience-copy, .experience-quote, .final-cta .page-shell, .footer-grid, .admin-card').forEach(element => observer.observe(element));
+  }
+  window.addEventListener('scroll', scroll, { passive: true });
+  update();
+  preference.addEventListener('change', event => {
+    if (!event.matches) return;
+    window.removeEventListener('scroll', scroll);
+    cancelAnimationFrame(frame);
+    observer?.disconnect();
+    animations.forEach(animation => animation.cancel());
+    animations.clear();
+    document.documentElement.style.removeProperty('--marble-y');
+  });
+})();
 
 </script>
 </body>
