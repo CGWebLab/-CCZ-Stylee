@@ -838,6 +838,21 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 .visagism-service p, .visagism-delivery li small { color: #fff; }
 @media (max-width: 720px) { .service-card a { width: 100%; } .brand-copy { padding-left: 7px; } }
 @media (prefers-reduced-motion: reduce) { .service-card a { transition: none; } }
+.service-grid { grid-template-columns: 1fr; }
+.haircut-service { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 0; border-right: 0; }
+.haircut-service:hover { transform: none; }
+.haircut-service .service-photo { height: 480px; margin: 0; overflow: hidden; background: #e9e7e2; }
+.haircut-service .service-photo img { object-fit: cover; object-position: center 42%; }
+.haircut-copy { padding: 48px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.haircut-copy .service-price { margin-top: 30px; }
+.haircut-copy h3 { font-size: clamp(2.6rem, 5vw, 4rem); }
+.haircut-copy p { max-width: 440px; }
+.booking-demo-notice { margin: 0 0 24px; padding: 14px; background: #edf3fc; color: #214c87; font-size: .82rem; line-height: 1.6; }
+@media (max-width: 720px) {
+  .haircut-service { grid-template-columns: 1fr; }
+  .haircut-service .service-photo { height: auto; aspect-ratio: 1 / 1.1; }
+  .haircut-copy { padding: 28px; }
+}
 
 </style>
     
@@ -866,6 +881,7 @@ body { font-weight: 300; letter-spacing: 0.005em; }
       </header>
 
       <p class="admin-demo-banner">Esta es una vista de presentación. Las reservas creadas desde la página se guardan en este dispositivo y aparecen aquí.</p>
+      <p class="admin-demo-banner">Atención en todo Montevideo · Todos los días, de 10 a 19 hs · Corte: 45 minutos. El cálculo de traslados en transporte público está pendiente de conexión.</p>
 
       <div class="admin-date-row">
         <label><span class="field-label">Ver agenda del día</span><input class="field-input" id="admin-date" type="date"></label>

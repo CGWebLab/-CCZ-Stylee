@@ -841,6 +841,21 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 .visagism-service p, .visagism-delivery li small { color: #fff; }
 @media (max-width: 720px) { .service-card a { width: 100%; } .brand-copy { padding-left: 7px; } }
 @media (prefers-reduced-motion: reduce) { .service-card a { transition: none; } }
+.service-grid { grid-template-columns: 1fr; }
+.haircut-service { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 0; border-right: 0; }
+.haircut-service:hover { transform: none; }
+.haircut-service .service-photo { height: 480px; margin: 0; overflow: hidden; background: #e9e7e2; }
+.haircut-service .service-photo img { object-fit: cover; object-position: center 42%; }
+.haircut-copy { padding: 48px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.haircut-copy .service-price { margin-top: 30px; }
+.haircut-copy h3 { font-size: clamp(2.6rem, 5vw, 4rem); }
+.haircut-copy p { max-width: 440px; }
+.booking-demo-notice { margin: 0 0 24px; padding: 14px; background: #edf3fc; color: #214c87; font-size: .82rem; line-height: 1.6; }
+@media (max-width: 720px) {
+  .haircut-service { grid-template-columns: 1fr; }
+  .haircut-service .service-photo { height: auto; aspect-ratio: 1 / 1.1; }
+  .haircut-copy { padding: 28px; }
+}
 
 </style>
     
@@ -903,33 +918,22 @@ body { font-weight: 300; letter-spacing: 0.005em; }
         <div class="page-shell">
           <div class="section-heading split-heading">
             <div><p class="eyebrow">SERVICIOS A DOMICILIO</p><h2>Diseño, técnica<br>y presencia.</h2></div>
-            <p>Cada servicio se realiza en tu domicilio y se adapta a tu rostro, tu tipo de cabello y el resultado que querés conseguir.</p>
+            <p>Atención a domicilio en todo Montevideo, todos los días de 10 a 19 hs. Cada servicio se adapta a tu rostro, tu cabello y el resultado que querés conseguir.</p>
           </div>
           <div class="service-grid">
-            <article class="service-card">
-              <span class="service-number">01</span><div class="service-photo"><img src="assets/corte-ariel.webp" alt="Corte con degradado y raya lateral" width="630" height="800" loading="lazy"></div>
+            <article class="service-card haircut-service">
+              <div class="service-photo"><img src="assets/corte-ariel-blur.webp" alt="Corte con degradado y raya lateral, con fondo difuminado" width="630" height="800" loading="lazy"></div>
+              <div class="haircut-copy"><span class="service-number">01</span>
               <span class="service-price">$800</span><h3>Corte</h3>
-              <p>Corte a máquina o tijera, terminación profesional y detalles precisos.</p>
-              <a href="#reservar">Elegir servicio <span aria-hidden="true">&#8599;&#65038;</span></a>
-            </article>
-            <article class="service-card">
-              <span class="service-number">02</span><div class="service-line"></div>
-              <span class="service-price">$300</span><h3>Barba</h3>
-              <p>Perfilado, contornos limpios y control de volumen para un acabado prolijo.</p>
-              <a href="#reservar">Elegir servicio <span aria-hidden="true">&#8599;&#65038;</span></a>
-            </article>
-            <article class="service-card">
-              <span class="service-number">03</span><div class="service-line"></div>
-              <span class="service-price">$100</span><h3>Cejas</h3>
-              <p>Perfilado sutil para ordenar la expresión y mantener un resultado natural.</p>
-              <a href="#reservar">Elegir servicio <span aria-hidden="true">&#8599;&#65038;</span></a>
+              <p>Corte a máquina o tijera, terminación profesional y detalles precisos. Duración aproximada: 45 minutos.</p>
+              <a href="#reservar" data-service="corte">Elegir servicio <span aria-hidden="true">&#8599;&#65038;</span></a></div>
             </article>
             <article class="service-card visagism-service">
               <div class="visagism-copy">
-                <div class="visagism-topline"><span class="service-number">04</span><span class="service-tag">SERVICIO PREMIUM</span></div>
+                <div class="visagism-topline"><span class="service-number">02</span><span class="service-tag">SERVICIO PREMIUM</span></div>
                 <span class="service-price">$1.800</span><h3>Corte + asesoría visagista</h3>
                 <p>Análisis personalizado de rostro, cabello y estilo para diseñar un corte que acompañe tus facciones y tu identidad.</p>
-                <a href="#reservar">Reservar asesoría <span aria-hidden="true">&#8599;&#65038;</span></a>
+                <a href="#reservar" data-service="visagismo">Reservar asesoría <span aria-hidden="true">&#8599;&#65038;</span></a>
               </div>
               <div class="visagism-delivery">
                 <p class="eyebrow light">QUÉ INCLUYE</p>
@@ -960,6 +964,7 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 
           <form class="booking-panel static-booking-panel" id="booking-form">
             <div class="booking-panel-head"><div><span>1</span><p>Servicio, horario y domicilio</p></div></div>
+            <p class="booking-demo-notice">Agenda de prueba · Todos los días de 10 a 19 hs. Los horarios todavía no incluyen traslados en ómnibus y no confirman una visita real.</p>
             <label class="field-label" for="booking-date">Elegí la fecha</label>
             <input class="field-input" id="booking-date" name="date" type="date" required>
 
@@ -1024,7 +1029,7 @@ body { font-weight: 300; letter-spacing: 0.005em; }
         <div class="page-shell footer-grid">
           <div>
             <a class="brand footer-brand" href="#inicio"><span class="brand-monogram">ArielCCZ</span><span class="brand-copy"><small>BARBERO<br>VISAGISTA</small></span></a>
-            <p>Barbería a domicilio con atención profesional y criterio visagista.</p>
+            <p>Barbería a domicilio en todo Montevideo.<br>Todos los días · 10 a 19 hs.</p>
           </div>
           <div><strong>Navegación</strong><a href="#servicios">Servicios</a><a href="#reservar">Reservar</a><a href="#experiencia">ArielCCZ</a></div>
           <div><strong>Contacto</strong><a href="https://www.instagram.com/ccz_stylee" target="_blank" rel="noreferrer">@ccz_stylee</a><span>Ariel Caraballo · Barbero Visagista</span><a href="barbero.html">Panel del barbero</a></div>
@@ -1035,8 +1040,6 @@ body { font-weight: 300; letter-spacing: 0.005em; }
   <script>
 const SERVICES = [
   { id: "corte", name: "Corte", duration: 45, price: 800 },
-  { id: "barba", name: "Barba", duration: 30, price: 300 },
-  { id: "cejas", name: "Cejas", duration: 15, price: 100 },
   { id: "visagismo", name: "Corte + asesoría visagista", duration: 90, price: 1800 },
 ];
 
@@ -1059,10 +1062,10 @@ let selectedServiceId = SERVICES[0].id;
 let selectedTime = "";
 
 function localDate(daysFromToday = 0) {
-  const date = new Date();
-  date.setDate(date.getDate() + daysFromToday);
-  const offset = date.getTimezoneOffset();
-  return new Date(date.getTime() - offset * 60_000).toISOString().slice(0, 10);
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Montevideo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  const date = new Date(`${today}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + daysFromToday);
+  return date.toISOString().slice(0, 10);
 }
 
 function formatPrice(value) {
@@ -1106,15 +1109,11 @@ function saveBookings(bookings) {
 }
 
 function workingHours(dateValue) {
-  const weekday = new Date(`${dateValue}T12:00:00Z`).getUTCDay();
-  if (weekday === 0) return null;
-  return weekday === 6 ? { open: "09:00", close: "18:00" } : { open: "10:00", close: "20:00" };
+  return { open: "10:00", close: "19:00" };
 }
 
-function seededLocks(dateValue) {
-  const weekday = new Date(`${dateValue}T12:00:00Z`).getUTCDay();
-  if (weekday === 0) return [];
-  return weekday % 2 === 0 ? ["11:00", "11:15", "16:00"] : ["12:30", "15:30", "15:45"];
+function isPastSlot(dateValue, time) {
+  return new Date(`${dateValue}T${time}:00-03:00`).getTime() <= Date.now();
 }
 
 function bookingLocks(dateValue) {
@@ -1129,7 +1128,7 @@ function bookingLocks(dateValue) {
 }
 
 function allLocks(dateValue) {
-  return new Set([...seededLocks(dateValue), ...bookingLocks(dateValue)]);
+  return new Set(bookingLocks(dateValue));
 }
 
 function renderServices() {
@@ -1170,16 +1169,22 @@ function renderSlots() {
   const locks = allLocks(dateValue);
   const open = toMinutes(hours.open);
   const close = toMinutes(hours.close);
-  for (let value = open; value + service.duration <= close; value += 30) {
+  for (let value = open; value + service.duration <= close; value += 15) {
     const time = toTime(value);
-    let available = true;
+    const past = isPastSlot(dateValue, time);
+    let available = !past;
     for (let offset = 0; offset < service.duration; offset += 15) {
       if (locks.has(toTime(value + offset))) available = false;
     }
     const label = document.createElement("label");
     label.className = `slot ${available ? "" : "occupied"}`;
-    label.innerHTML = `<input type="radio" name="startTime" value="${time}" ${available ? "" : "disabled"}><strong>${time}</strong><small>${available ? "Disponible" : "Ocupado"}</small>`;
+    label.innerHTML = `<input type="radio" name="startTime" value="${time}" ${available ? "" : "disabled"}><strong>${time}</strong><small>${past ? "Ya pasó" : available ? "Disponible" : "Ocupado"}</small>`;
     if (available) {
+      if (!selectedTime) {
+        selectedTime = time;
+        label.classList.add("selected");
+        label.querySelector("input").checked = true;
+      }
       label.querySelector("input").addEventListener("change", () => {
         selectedTime = time;
         document.querySelectorAll(".slot").forEach((slot) => slot.classList.remove("selected"));
@@ -1231,6 +1236,11 @@ form.addEventListener("submit", (event) => {
 
   const data = new FormData(form);
   const service = SERVICES.find((item) => item.id === selectedServiceId);
+  if (dateInput.value < localDate() || dateInput.value > localDate(60) || isPastSlot(dateInput.value, selectedTime) || toMinutes(selectedTime) < 600 || toMinutes(selectedTime) + service.duration > 1140) {
+    showError("Elegí un horario vigente entre las 10 y las 19 hs.");
+    renderSlots();
+    return;
+  }
   const code = crypto.randomUUID().replaceAll("-", "").slice(0, 8).toUpperCase();
   const booking = {
     id: crypto.randomUUID(),
@@ -1278,6 +1288,13 @@ dateInput.addEventListener("change", renderSlots);
 document.querySelector("#year").textContent = new Date().getFullYear();
 renderServices();
 renderSlots();
+document.querySelectorAll("[data-service]").forEach((link) => {
+  link.addEventListener("click", () => {
+    selectedServiceId = link.dataset.service;
+    renderServices();
+    renderSlots();
+  });
+});
 
 </script>
 </body>
