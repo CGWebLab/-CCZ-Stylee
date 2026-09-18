@@ -1094,12 +1094,32 @@ const SERVICES = [
 ];
 
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-function resetPagePosition() {
-  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  requestAnimationFrame(() => window.scrollTo(0, 0));
+let entryInteracted = false;
+let entryTimers = [];
+function stopEntryReset() {
+  entryInteracted = true;
+  entryTimers.forEach(clearTimeout);
+  entryTimers = [];
 }
-resetPagePosition();
-window.addEventListener("pageshow", resetPagePosition);
+["touchstart", "pointerdown", "wheel", "keydown"].forEach(type => {
+  window.addEventListener(type, stopEntryReset, { passive: true });
+});
+function resetPagePosition() {
+  if (entryInteracted) return;
+  window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+}
+function startPageAtTop() {
+  entryTimers.forEach(clearTimeout);
+  entryTimers = [];
+  entryInteracted = false;
+  if (location.hash) history.replaceState(history.state, "", location.pathname + location.search);
+  resetPagePosition();
+  requestAnimationFrame(resetPagePosition);
+  entryTimers = [100, 300, 700, 1200].map(delay => setTimeout(resetPagePosition, delay));
+}
+startPageAtTop();
+window.addEventListener("pageshow", startPageAtTop);
+window.addEventListener("load", resetPagePosition);
 
 window.addEventListener("DOMContentLoaded", () => {
   resetPagePosition();
