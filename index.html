@@ -1079,7 +1079,16 @@ const SERVICES = [
   { id: "visagismo", name: "Corte + asesoría visagista", duration: 90, price: 1800 },
 ];
 
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+function resetPagePosition() {
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  requestAnimationFrame(() => window.scrollTo(0, 0));
+}
+resetPagePosition();
+window.addEventListener("pageshow", resetPagePosition);
+
 window.addEventListener("DOMContentLoaded", () => {
+  resetPagePosition();
   const introReveal = document.getElementById("intro-reveal");
   if (!introReveal) return;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
