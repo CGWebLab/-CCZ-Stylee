@@ -1009,7 +1009,7 @@ body, .services-section, .experience-section, .booking-section, .hero, .site-foo
             </fieldset>
 
             <label class="full-field"><span class="field-label">Nombre y apellido</span><input class="field-input" id="booking-name" name="name" autocomplete="name" minlength="2" maxlength="80" required></label>
-            <label class="full-field"><span class="field-label">Teléfono o WhatsApp</span><input class="field-input" id="booking-phone" name="phone" type="tel" autocomplete="tel" minlength="6" maxlength="30" placeholder="Ej.: 099 123 456" required></label>
+            <label class="full-field"><span class="field-label">Correo electrónico</span><input class="field-input" id="booking-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="tuemail@ejemplo.com" required></label>
 
             <label class="full-field"><span class="field-label">Dirección del servicio</span><input class="field-input" id="booking-address" name="address" autocomplete="street-address" placeholder="Calle, número, barrio y ciudad" minlength="5" maxlength="160" required></label>
             <label class="full-field"><span class="field-label">Aclaraciones (opcional)</span><textarea class="field-input" id="booking-notes" name="notes" maxlength="500" rows="3" placeholder="Apartamento, esquina o referencia"></textarea></label>
@@ -1030,10 +1030,10 @@ body, .services-section, .experience-section, .booking-section, .hero, .site-foo
             <span class="success-check">✓</span>
             <p class="eyebrow">SOLICITUD RECIBIDA</p>
             <h3 id="success-title">Listo.</h3>
-            <p>Guardá este código. Ariel revisará los traslados y se comunicará contigo para confirmar la hora.</p>
+            <p>Guardá este código y revisá tu correo. Ariel te enviará otro mensaje cuando asigne la hora.</p>
             <div class="booking-code" id="success-code"></div>
             <dl class="booking-summary" id="success-summary"></dl>
-            <p class="success-coordination">ArielCCZ se comunicará contigo para coordinar los detalles de la visita.</p>
+            <p class="success-coordination">La solicitud todavía no es un turno confirmado. Recibirás la fecha y hora definitiva por correo.</p>
             <button class="button button-dark button-full" type="button" id="new-booking">Reservar otro turno</button>
           </div>
         </div>
@@ -1131,7 +1131,7 @@ function renderServices() {
 
 function renderAvailabilityMessage() {
   slotLabel.textContent = "Confirmación del horario";
-  slotGrid.innerHTML = "<p>Enviá tu solicitud. Ariel revisará el recorrido en transporte público y te ofrecerá la primera hora posible.</p>";
+  slotGrid.innerHTML = "<p>Enviá tu solicitud. Recibirás un correo inmediato y otro mensaje cuando Ariel confirme la hora.</p>";
   formError.classList.add("hidden");
 }
 
@@ -1166,16 +1166,17 @@ function showSuccess(request, service) {
 }
 
 async function sendRequest(payload) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/booking_requests`, {
+  const response = await fetch(`${SUPABASE_URL}/functions/v1/create-booking-request`, {
     method: "POST",
     headers: {
       apikey: SUPABASE_KEY,
       "Content-Type": "application/json",
-      Prefer: "return=minimal",
     },
     body: JSON.stringify(payload),
   });
-  if (!response.ok) throw new Error(`request_failed_${response.status}`);
+  const data = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(data?.error || "No se pudo enviar la solicitud.");
+  return data;
 }
 
 form.addEventListener("submit", async (event) => {
@@ -1189,7 +1190,7 @@ form.addEventListener("submit", async (event) => {
   const payload = {
     id: crypto.randomUUID(),
     customer_name: document.querySelector("#booking-name").value.trim(),
-    phone: document.querySelector("#booking-phone").value.trim(),
+    customer_email: document.querySelector("#booking-email").value.trim(),
     address: document.querySelector("#booking-address").value.trim(),
     notes: document.querySelector("#booking-notes").value.trim() || null,
     requested_date: dateInput.value,
@@ -1199,10 +1200,13 @@ form.addEventListener("submit", async (event) => {
   submitButton.disabled = true;
   submitButton.textContent = "Enviando…";
   try {
-    await sendRequest(payload);
-    showSuccess(payload, service);
-  } catch {
-    showError("No pudimos enviar la solicitud. Revisá tu conexión e intentá nuevamente.");
+    const result = await sendRequest(payload);
+    showSuccess({ ...payload, id: result.id }, service);
+    if (!result.email_sent) {
+      document.querySelector(".success-coordination").textContent = "La solicitud quedó guardada, pero el correo está demorado. Ariel puede verla desde su panel.";
+    }
+  } catch (error) {
+    showError(error.message || "No pudimos enviar la solicitud. Revisá tu conexión e intentá nuevamente.");
   } finally {
     submitButton.disabled = false;
     submitButton.innerHTML = "Enviar solicitud <span>→</span>";

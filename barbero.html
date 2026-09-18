@@ -916,7 +916,7 @@ body, .services-section, .experience-section, .booking-section, .hero, .site-foo
         <div class="admin-header-actions"><a href="index.html">Ver página pública ↗</a><button class="admin-ghost-button" id="logout-button" type="button">Salir</button></div>
       </header>
 
-      <p class="admin-demo-banner">Solicitudes compartidas en tiempo real. Confirmá una hora únicamente después de revisar el traslado en transporte público.</p>
+      <p class="admin-demo-banner">Solicitudes compartidas en tiempo real. Al confirmar una hora, el cliente recibe automáticamente los datos por correo.</p>
 
       <div class="admin-date-row">
         <label><span class="field-label">Ver agenda del día</span><input class="field-input" id="admin-date" type="date"></label>
@@ -1064,6 +1064,26 @@ async function updateRequest(id, changes) {
   await loadRequests();
 }
 
+async function confirmRequest(id, confirmedDate, startMinute) {
+  const response = await fetch(`${SUPABASE_URL}/functions/v1/confirm-booking`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${session.access_token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id, confirmed_date: confirmedDate, start_minute: startMinute }),
+  });
+  if (response.status === 401) {
+    await refreshSession();
+    return confirmRequest(id, confirmedDate, startMinute);
+  }
+  const data = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(data?.error || "No se pudo confirmar el turno.");
+  await loadRequests();
+  if (!data.email_sent) window.alert("El turno quedó confirmado, pero no se pudo enviar el correo al cliente.");
+}
+
 function makeActionButton(text, className, action) {
   const button = createTextElement("button", text, className);
   button.type = "button";
@@ -1092,7 +1112,7 @@ function renderRow(request) {
 
   const main = document.createElement("div");
   main.append(createTextElement("h3", `${request.customer_name} · ${service.name}`));
-  main.append(createTextElement("p", `${request.phone} · ${formatPrice(service.price)} · ${service.duration} min`));
+  main.append(createTextElement("p", `${request.customer_email || request.phone || "Sin contacto"} · ${formatPrice(service.price)} · ${service.duration} min`));
   main.append(createTextElement("small", `Domicilio: ${request.address}${request.notes ? ` · ${request.notes}` : ""}`));
   row.append(main);
 
@@ -1106,12 +1126,11 @@ function renderRow(request) {
     time.value = "10:00";
     time.className = "admin-time-input";
     actions.append(time);
-    actions.append(makeActionButton("Confirmar hora", "", () => updateRequest(request.id, {
-      status: "confirmed",
-      confirmed_date: dateInput.value,
-      start_minute: timeToMinutes(time.value),
-      travel_reviewed: true,
-    })));
+    actions.append(makeActionButton("Confirmar y avisar", "", () => confirmRequest(
+      request.id,
+      dateInput.value,
+      timeToMinutes(time.value),
+    )));
   } else if (request.status === "confirmed") {
     actions.append(makeActionButton("Completar", "", () => updateRequest(request.id, { status: "completed" })));
   }
