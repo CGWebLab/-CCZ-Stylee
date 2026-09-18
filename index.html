@@ -681,8 +681,8 @@ textarea.field-input { resize: vertical; }
   letter-spacing: 0.03em;
   text-align: center;
 }
-.static-header { top: 34px; }
-.static-hero { padding-top: 34px; }
+.static-header { top: 0; }
+.static-hero { padding-top: 0; }
 .static-hero .hero-image { position: absolute; inset: 0; width: 100%; height: 100%; }
 .static-booking-panel .booking-panel-head { grid-template-columns: 1fr; }
 .static-booking-panel .booking-panel-head div { background: var(--ink); color: var(--cream); }
@@ -730,8 +730,8 @@ textarea.field-input { resize: vertical; }
 .button:disabled, .demo-row-actions button:disabled { cursor: wait; opacity: .58; }
 
 @media (max-width: 720px) {
-  .static-header { top: 32px; }
-  .static-hero { padding-top: 32px; }
+  .static-header { top: 0; }
+  .static-hero { padding-top: 0; }
   .date-service-grid { grid-template-columns: 1fr; }
   .admin-summary-grid { grid-template-columns: 1fr; }
   .static-admin-main { padding: 28px 15px 70px; }
@@ -859,6 +859,10 @@ body { font-weight: 300; letter-spacing: 0.005em; }
 .haircut-copy .service-price { margin-top: 30px; }
 .haircut-copy h3 { font-size: clamp(2.6rem, 5vw, 4rem); }
 .haircut-copy p { max-width: 440px; }
+.booking-layout > *, .date-service-grid > *, .client-fields > *,
+.service-card > *, .service-option-copy, .experience-grid > *, .footer-grid > * { min-width: 0; }
+.field-input { min-width: 0; max-width: 100%; }
+.footer-grid a, .booking-summary, .availability-result { overflow-wrap: anywhere; }
 .booking-demo-notice { margin: 0 0 24px; padding: 14px; background: #edf3fc; color: #214c87; font-size: .82rem; line-height: 1.6; }
 .availability-result { padding: 18px; border: 1px solid var(--line); border-radius: 12px; color: #34465f; line-height: 1.6; font-size: .9rem; }
 .availability-result p { margin: 0; }
@@ -889,6 +893,15 @@ body, .services-section, .experience-section, .booking-section, .hero, .site-foo
   .haircut-service { grid-template-columns: 1fr; }
   .haircut-service .service-photo { height: auto; aspect-ratio: 1 / 1.1; }
   .haircut-copy { padding: 28px; }
+  .hero h1 { font-size: clamp(2.65rem, 12vw, 5.2rem); }
+  .section-heading h2, .experience-copy h2, .booking-intro h2, .final-cta h2 { font-size: clamp(2.2rem, 10vw, 3.35rem); }
+  .button { max-width: 100%; white-space: normal; text-align: center; }
+  .service-option { gap: 10px; padding-inline: 10px; }
+  .service-option b { flex-shrink: 0; }
+  .visagism-topline { flex-wrap: wrap; gap: 12px; }
+  .visagism-copy, .visagism-delivery, .haircut-copy { padding-inline: clamp(18px, 6vw, 28px); }
+  .visagism-delivery li p { min-width: 0; }
+  .footer-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
 
 </style>
